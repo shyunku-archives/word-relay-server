@@ -4,9 +4,9 @@ const app = express();
 const pbip = require('public-ip');
 const {Room, Player} = require('./object');
 
-const server = app.listen(80, async() => {
+const server = app.listen(7900, async() => {
     publicIp = await pbip.v4();
-    console.log(`server opened at ${publicIp}`);
+    console.log(`server opened at ${publicIp}:7900`);
 });
 
 app.all('/*', function(req, res, next) {
