@@ -6,7 +6,7 @@ const {Room, Player} = require('./object');
 
 const server = app.listen(80, async() => {
     publicIp = await pbip.v4();
-    console.log(`server opened at ${publicIp}:7900`);
+    console.log(`server opened at ${publicIp}`);
 });
 
 app.all('/*', function(req, res, next) {
@@ -46,17 +46,22 @@ app.post('/join', (req, res) => {
             msg: "Room not exist!",
             data: 2
         });
+        return;
     }
+
+    console.log("finding "+roomCode);
+    console.log(roomMap);
 
     let room = roomMap[roomCode];
 
     // Player nickname duplicated?
-    if(Object.keys(room.playerMap).includes(nickname)){
+    if(Object.values(room.playerMap).find(item => item.player.nickname === nickname) !== undefined){
         res.send({
             success: false,
             msg: "Nickname duplicated!",
             data: 3
         });
+        return;
     }
 
     let curPlayer = new Player(nickname);

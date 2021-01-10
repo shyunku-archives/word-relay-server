@@ -25,8 +25,6 @@ class Room{
                 for(let i=0;i<this.playerQueue.length; i++){
                     let cursorPlayer = this.playerQueue[i];
 
-                    console.log(`seeking for ${data.playerCode} : ${cursorPlayer.playerCode}`);
-
                     if(cursorPlayer.playerCode === data.playerCode){
                         this.playerMap[socket.id] = {
                             player: cursorPlayer,
