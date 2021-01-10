@@ -39,10 +39,6 @@ app.post('/join', (req, res) => {
     let roomCode = req.body.room_code;
     let nickname = req.body.nickname;
 
-    let {
-        roomCode, nickname
-    } = req.query;
-
     // Room not exist?
     if(!roomMap.hasOwnProperty(roomCode)){
         res.send({
