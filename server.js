@@ -28,6 +28,17 @@ app.get('/roomMap', (req, res) => {
 });
 
 app.post('/join', (req, res) => {
+    if(!req.body.hasOwnProperty("room_code") || !req.body.hasOwnProperty("nickname")){
+        res.send({
+            success: false,
+            msg: "Invalid params",
+            data: 1
+        });
+    }
+
+    let roomCode = req.body.room_code;
+    let nickname = req.body.nickname;
+
     let {
         roomCode, nickname
     } = req.query;
@@ -37,7 +48,7 @@ app.post('/join', (req, res) => {
         res.send({
             success: false,
             msg: "Room not exist!",
-            data: null
+            data: 2
         });
     }
 
@@ -48,7 +59,7 @@ app.post('/join', (req, res) => {
         res.send({
             success: false,
             msg: "Nickname duplicated!",
-            data: null
+            data: 3
         });
     }
 
@@ -59,7 +70,8 @@ app.post('/join', (req, res) => {
         success: true,
         msg: null,
         data: {
-            player_code: curPlayer.playerCode
+            player_code: curPlayer.playerCode,
+            room_code: roomCode
         }
     });
 });
