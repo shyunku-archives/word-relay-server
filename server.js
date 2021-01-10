@@ -1,3 +1,4 @@
+const { response } = require('express');
 const express = require('express');
 const app = express();
 const pbip = require('public-ip');
@@ -10,14 +11,20 @@ const server = app.listen(80, async() => {
 
 app.all('/*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Headers", "Content-Type,X-Requested-With");
     next();
 });
 
-let roomThreads = {};
+app.use(express.json());
+
+let roomMap = {};
 
 app.get('/', (req, res) => {
     res.send("It works!");
+});
+
+app.get('/roomMap', (req, res) => {
+    res.send(roomMap);
 });
 
 app.post('/join', (req, res) => {
@@ -26,7 +33,7 @@ app.post('/join', (req, res) => {
     } = req.query;
 
     // Room not exist?
-    if(!roomThreads.hasOwnProperty(roomCode)){
+    if(!roomMap.hasOwnProperty(roomCode)){
         res.send({
             success: false,
             msg: "Room not exist!",
@@ -34,7 +41,7 @@ app.post('/join', (req, res) => {
         });
     }
 
-    let room = roomThreads[roomCode];
+    let room = roomMap[roomCode];
 
     // Player nickname duplicated?
     if(Object.keys(room.playerMap).includes(nickname)){
@@ -58,10 +65,30 @@ app.post('/join', (req, res) => {
 });
 
 app.post('/createRoom', (req, res) => {
-    let roomName = req.query.room_name;
-    let newRoom = new Room(roomName, null);
+    if(!req.body.hasOwnProperty("room_name") || !req.body.hasOwnProperty("creator")){
+        res.send({
+            success: false,
+            msg: "Invalid params",
+            data: null
+        });
+    }
 
-    roomThreads[newRoom.roomCode] = newRoom;
+    let roomName = req.body.room_name;
+    let creator = req.body.creator;
 
-    res.send(true);
+    let creatorPlayer = new Player(creator);
+    let newRoom = new Room(roomName, creatorPlayer);
+
+    roomMap[newRoom.roomCode] = newRoom;
+
+    console.log(`Room ${roomName} created!`);
+
+    res.send({
+        success: true,
+        msg: null,
+        data: {
+            player_code: creatorPlayer.playerCode,
+            room_code: newRoom.roomCode
+        }
+    });
 });
