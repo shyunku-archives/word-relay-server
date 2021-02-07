@@ -79,9 +79,20 @@ class Room{
                 axios.get(`http://localhost/dict/meaning?query=${data}`)
                     .then(res => {
                         let searchResult = res.data;
+                        let matched = searchResult.totalResultNum > 0;
+                        let available = false;
+
+                        if(matched){
+                            if(!this.usedWordHashMap.hasOwnProperty(searchResult)){
+                                this.usedWordHashMap[searchResult] = true;
+                                available = true;
+                            }
+                        }
+
                         this.socketServer.emit("relay", {
                             sender: sender,
-                            matched: searchResult.totalResultNum > 0,
+                            matched: matched,
+                            available: available,
                             word: searchResult.targetWord,
                             meanings: searchResult.meanings,
                             time: new Date().getTime()
