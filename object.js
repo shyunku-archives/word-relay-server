@@ -78,10 +78,12 @@ class Room{
 
                 axios.get(`http://localhost/dict/meaning?query=${data}`)
                     .then(res => {
-                        console.log(res.data);
+                        let searchResult = res.data;
                         this.socketServer.emit("relay", {
                             sender: sender,
-                            content: data,
+                            matched: searchResult.totalResultNum > 0,
+                            word: searchResult.targetWord,
+                            meanings: searchResult.meanings,
                             time: new Date().getTime()
                         });
                     })
