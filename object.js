@@ -1,3 +1,4 @@
+const axios = require('axios');
 const util = require('./util');
 const socketio = require('socket.io', {transports: ["websocket"]})(24991);
 
@@ -10,6 +11,7 @@ class Room{
         this.playerMap = {};
         this.socketMap = {};
         this.closed = false;
+        this.usedWordHashMap = {};
 
         this.join(this.creator);
 
@@ -69,6 +71,23 @@ class Room{
                     content: data,
                     time: new Date().getTime()
                 });
+            });
+
+            socket.on("relay", data => {
+                let sender = this.playerMap[socket.id].player;
+
+                axios.get(`http://localhost/dict/meaning?query=${}`)
+                    .then(res => {
+                        console.log(res.data);
+                        this.socketServer.emit("relay", {
+                            sender: sender,
+                            content: data,
+                            time: new Date().getTime()
+                        });
+                    })
+                    .catch(res => {
+
+                    });
             });
 
             socket.on("disconnect", data => {
