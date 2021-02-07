@@ -76,7 +76,7 @@ class Room{
             socket.on("relay", data => {
                 let sender = this.playerMap[socket.id].player;
 
-                axios.get(`http://localhost/dict/meaning?query=${}`)
+                axios.get(`http://localhost/dict/meaning?query=${data}`)
                     .then(res => {
                         console.log(res.data);
                         this.socketServer.emit("relay", {
