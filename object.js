@@ -84,8 +84,15 @@ class Room{
 
                         if(matched){
                             if(!this.usedWordHashMap.hasOwnProperty(searchResult)){
-                                this.usedWordHashMap[searchResult] = true;
+                                this.usedWordHashMap[data] = true;
                                 available = true;
+
+                                sender.score += 1;
+
+                                this.socketServer.emit("relay-broadcast", {
+                                    sender: sender,
+                                    word: data
+                                });
                             }
                         }
 
