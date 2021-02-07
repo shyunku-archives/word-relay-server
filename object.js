@@ -91,7 +91,8 @@ class Room{
 
                                 this.socketServer.emit("relay-broadcast", {
                                     sender: sender,
-                                    word: data
+                                    word: data,
+                                    meanings: searchResult.meanings,
                                 });
                             }
                         }
@@ -101,7 +102,6 @@ class Room{
                             matched: matched,
                             available: available,
                             word: searchResult.targetWord,
-                            meanings: searchResult.meanings,
                             time: new Date().getTime()
                         });
                     })
